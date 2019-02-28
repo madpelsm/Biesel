@@ -1,6 +1,7 @@
 #include <src/biesel.h>
 #include <src/cnoidal.h>
 #include <src/stokesII.h>
+#include <src/stokesIV.h>
 #include <stdio.h>
 #include <cmath>
 #include <fstream>
@@ -44,19 +45,22 @@ int main(int argc, char* argv[]) {
     }
     // h H T
     Biesel b1(parameters["d"], parameters["H"], parameters["T"]);
+    printf("made biesel\n");
     cnoidal c1(parameters["H"], parameters["T"], parameters["d"]);
     StokesII s1(parameters["H"], parameters["T"], parameters["d"]);
+    StokesIV s3(parameters["H"], parameters["T"], parameters["d"]);
 
     double x[] = {parameters["x"]};
 
     std::string data = "";
     int T = 100;
     double dt = 0.1;
-    data += "Time [s]\tBiesel [m]\tStokes II \tCnoidal\n";
+    data += "Time [s]\tBiesel [m]\tStokes II \tStokesIII\tCnoidal\n";
     for (double t = 0; t < 100; t += dt) {
         // printf("%f \n", (double)b1.eta(x, (double)t));
         data += std::to_string(t) + "\t" + std::to_string(b1.eta(x[0], t)) +
                 "\t" + std::to_string(s1.eta(x[0], t)) + "\t" +
+                std::to_string(s3.eta(x[0], t)) + "\t" +
                 std::to_string(c1.eta(x[0], t)) + "\n";
 
         // printf("eta(%f,%f) = %f \n", x, (float)t, (double)b1.eta(x,

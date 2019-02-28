@@ -8,6 +8,7 @@ Biesel::Biesel(double _h, double _H, double _T) : H(_H), h(_h), T(_T) {
     k.reserve(N);
     for (int n = 0; n < N; n++) {
         calculatek(n);
+        calc_piston(n);
     }
 }
 
@@ -43,7 +44,6 @@ void Biesel::calculatek(int n) {
             f = k_function(kn);
             df = k_function_der(kn);
             knn = kn - f / df;
-
         } while (abs(f) >= ds);
         k.push_back(kn);
     }
@@ -54,7 +54,7 @@ double Biesel::k_function(double x) {
 }
 
 double Biesel::k_function_der(double x) {
-    return (-9.81) * tan(x * h) - 9.81 * x * h * pow(1 + tan(x * h), 2);
+    return (-9.81) * tan(x * h) - 9.81 * x * h * (1 + pow(tan(x * h), 2));
 }
 
 double Biesel::e_piston_z(double z) { return S0 * 0.5; }
@@ -71,7 +71,7 @@ double Biesel::e_t(double e_z, double t, double n = 1) {
     return e_z * sin(omega(0) * t);
 }
 
-double Biesel::c_piston(int n) {
+void Biesel::calc_piston(int n) {
     double noemer = (sinh(k[n] * h) * cosh(k[n] * h) + k[n] * h);
     double teller = (2.0 * k[n] * integrate_ezcosh(0, h, n));
     double ccc = teller / noemer;
@@ -79,7 +79,7 @@ double Biesel::c_piston(int n) {
         N = n;
         printf("Only need %d terms\n", N);
     }
-    return ccc;
+    c_pist.push_back(ccc);
 }
 
 double Biesel::integrate_ezcosh(double under, double upper, int n) {
@@ -102,7 +102,7 @@ double Biesel::eta(double x, double t) {
     double T = 0;
     for (int n = 1; n < N; n++) {
         T = exp(((-1.0) * k[n]) * x) *
-            (sin(omega(0) * t) * (c_piston(n) * sin(k[n] * h)));
+            (sin(omega(0) * t) * (c_pist[n] * sin(k[n] * h)));
         ss += T;
     }
     return ss;

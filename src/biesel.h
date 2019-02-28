@@ -6,10 +6,11 @@ class Biesel {
     double H, h, T;
     double L, m_k;
     double S0;
-    int N = 19;
-    double ds = 0.0001;
+    int N = 50;
+    double ds = 1.0e-7;
 
     std::vector<double> k;
+    std::vector<double> c_pist;
     Biesel(double h, double H, double T);
     ~Biesel();
 
@@ -34,4 +35,6 @@ class Biesel {
     double k_function(double x);
 
     double k_function_der(double x);
+
+    void calc_piston(int n);
 };

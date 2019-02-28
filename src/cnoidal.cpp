@@ -84,7 +84,7 @@ double cnoidal::K(double m) {
     if (m < 0 || m > 1) printf("Wrong modulus for K\n");
     return boost::math::ellint_1(m);
 }
-double cnoidal::cn(double z, double m) { return boost::math::jacobi_cn(m, z); }
+double cnoidal::cn(double z, double m) { return boost::math::jacobi_cn(abs(m), z); }
 
 double cnoidal::K_a(double m) {
     return 2.0 * M_PI / (pow(1.0 + pow(m, 0.25), 2));
@@ -104,7 +104,7 @@ double cnoidal::fac(double n) {
 }
 
 void cnoidal::calculate_m() {
-    double m_init = 1.0 - 2 * ds;  // stay away from 1.0
+    double m_init = 1.0 - 2.0 * ds;  // stay away from 1.0
     m = m_init;
     int i = 0;
     double df1, df2, f1, f2, f, df;
